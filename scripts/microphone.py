@@ -5,10 +5,6 @@ import sys
 import time
 import pyaudio
 
-from google.cloud import speech
-from google.cloud.speech import enums
-from google.cloud.speech import types
-
 from six.moves import queue
 
 RATE = 16000
@@ -81,67 +77,3 @@ class MicrophoneStream(object):
                     break
 
             yield b"".join(data)
-
-# Not in Use
-def listen_print_loop(responses):
-    prev_flag = -1
-    
-    for response in responses:
-        
-        if not response.results:
-            continue
-
-        result = response.results[0]
-        cur_flag = 0 if result.is_final == False else 1
-        if prev_flag != cur_flag:
-            if result.is_final:
-                print("!!!End!!!!")
-            else:
-                print("!!!Start Speaking!!!")
-            prev_flag = cur_flag
-        else:
-            continue
-        
-        
-        if not result.alternatives:
-            continue
-        
-        transcript = result.alternatives[0].transcript  # Transcription of the top alternatives
-
-        if result.is_final:
-            #print(transcript + overwrite_chars)
-            print(transcript)
-            prev_flag = -1
-
-            if re.search(r"\b(exit|quit)\b", transcript, re.I):
-                print("Exiting..")
-                break
-
-
-def main():
-    language_code = "en-US"
-    client = speech.SpeechClient()
-
-    config = types.RecognitionConfig(
-    encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
-    sample_rate_hertz=RATE,
-    language_code=language_code,
-    )
-
-    streaming_config = speech.StreamingRecognitionConfig(
-        config=config, interim_results=True
-    )
-
-    with MicrophoneStream(RATE, CHUNK) as stream:
-        audio_generator = stream.generator()
-        requests = (
-            speech.StreamingRecognizeRequest(audio_content=content)
-            for content in audio_generator
-        )
-
-        responses = client.streaming_recognize(streaming_config, requests)
-        # Now, put the transcription responses to use.
-        listen_print_loop(responses)
-
-if __name__ == "__main__":
-    main()
