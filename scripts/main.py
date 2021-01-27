@@ -56,8 +56,8 @@ def main(responses):
             IS_SPEAKING = False
             # TODO: Modulize Action Part  
             cur_action = D.decide(IS_SPEAKING, transcript)
-            print("Finished speaking. Recognized sentence: ", transcript)
-            print("Classified Emotion Index: ", cur_action)
+            print "Finished speaking. Recognized sentence: ", "'",transcript,"'"
+            print "Classified Emotion Index: ", cur_action,"\n"
 
             if cur_action != prev_action:
                 prev_action = cur_action
@@ -88,7 +88,8 @@ if __name__ == "__main__":
     )
     
     # Streaming STT
-    print("Configuration Set")
+    print("=================================")
+    print("Configuration Set!")
     with mic_manager as stream:
             
         audio_generator = stream.generator()
@@ -96,6 +97,7 @@ if __name__ == "__main__":
             types.StreamingRecognizeRequest(audio_content=content)
             for content in audio_generator
         )
+        print("=================================")
         print("Please speak anything to start...")
         responses = client.streaming_recognize(streaming_config, requests)
         main(responses)
