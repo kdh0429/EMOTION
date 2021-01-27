@@ -1,11 +1,5 @@
 import random 
 
-# TODO: Word Bag System
-basic_keywords = {'hm', 'hmm', 'well'}
-grin_keywords = {'hello', 'goodbye', 'thanks', 'thank', 'good', 'understand', 'ha', 'funny', 'yeah', 'yay'}
-wow_keywords = {'wow', 'oh', 'ho', 'ooh', 'amazing', 'beautiful', 'Hooray'}
-negative_keywords={'strange', 'awkward','hate', 'weird', 'mistake', 'sorry'}
-
 class Decision:
     """
     BASIC RULE
@@ -16,7 +10,37 @@ class Decision:
     FACE TYPES: 1-Basic / 2-Grin / 3-Oh / 4-Negative / 5-isSpeaking
     """ 
     def __init__(self):
+        self.load_keywods()
         self.decision = 1
+
+    def load_keywods(self):
+        basic_keywords_array = []
+        with open('../keyword/basic_keywords.txt', 'r') as filehandle:
+            for line in filehandle:
+                currentPlace = line[:-1]
+                basic_keywords_array.append(currentPlace)
+        self.basic_keywords = set(basic_keywords_array)
+
+        grin_keywords_array = []
+        with open('../keyword/grin_keywords.txt', 'r') as filehandle:
+            for line in filehandle:
+                currentPlace = line[:-1]
+                grin_keywords_array.append(currentPlace)
+        self.grin_keywords = set(grin_keywords_array)
+
+        wow_keywords_array = []
+        with open('../keyword/wow_keywords.txt', 'r') as filehandle:
+            for line in filehandle:
+                currentPlace = line[:-1]
+                wow_keywords_array.append(currentPlace)
+        self.wow_keywords = set(wow_keywords_array)
+
+        negative_keywords_array = []
+        with open('../keyword/negative_keywords.txt', 'r') as filehandle:
+            for line in filehandle:
+                currentPlace = line[:-1]
+                negative_keywords_array.append(currentPlace)
+        self.negative_keywords = set(negative_keywords_array)
 
     def decide(self, isSpeaking=False, last_sentence=""):
         if isSpeaking:
@@ -26,10 +50,10 @@ class Decision:
             category_score = [0,0,0,0]
             sentence = last_sentence.lower().split()
             
-            category_score[0] = len(set(sentence) & basic_keywords)
-            category_score[1] = len(set(sentence) & grin_keywords)
-            category_score[2] = len(set(sentence) & wow_keywords)
-            category_score[3] = len(set(sentence) & negative_keywords)
+            category_score[0] = len(set(sentence) & self.basic_keywords)
+            category_score[1] = len(set(sentence) & self.grin_keywords)
+            category_score[2] = len(set(sentence) & self.wow_keywords)
+            category_score[3] = len(set(sentence) & self.negative_keywords)
                                     
             self.decision = category_score.index(max(category_score)) + 1
             
