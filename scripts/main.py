@@ -10,17 +10,11 @@ from google.cloud.speech import types
 import time
 import re
 
-
 LANGUAGE = "en-US"
 RATE = 16000
 CHUNK = int(RATE / 10)  # Unit: 100ms
 STREAMING_LIMIT = 240000  # 4 min.
 IS_SPEAKING = False
-
-def get_current_time():
-    # Return current time in ms
-
-    return int(round(time.time() * 1000))
 
 def main(responses):
     pub = rospy.Publisher('tocabi/emotion', Int64, queue_size=10)
@@ -46,6 +40,7 @@ def main(responses):
                 prev_action = cur_action
 
             prev_speaking_flag = cur_flag
+            pub.publish(cur_action)
         
         if not result.alternatives:
             continue
@@ -63,13 +58,12 @@ def main(responses):
                 prev_action = cur_action
 
             prev_speaking_flag = -1
-
+            pub.publish(cur_action)
             # Exit recognition if any of the transcribed phrases could be one of ["exit", "quit"]
             if re.search(r"\b(exit|quit)\b", transcript, re.I):
                 print("Exiting..")
                 break
         
-        pub.publish(cur_action)
 
 
 if __name__ == "__main__":
