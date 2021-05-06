@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 import rospy
-from std_msgs.msg import Int64
+from std_msgs.msg import *
+
+# from std_msgs.msg import Bool
+# from std_msgs.msg import String
+# from std_msgs.msg import Int8
+# from std_msgs.msg import Float32
+
 
 from decision import Decision
 from microphone import MicrophoneStream
@@ -18,6 +24,10 @@ IS_SPEAKING = False
 
 def main(responses):
     pub = rospy.Publisher('tocabi/emotion', Int64, queue_size=10)
+    overlay_control_pub = rospy.Publisher('overlay_command', String, queue_size=5)
+    pose_calibration_pub = rospy.Publisher('/tocabi/dg/avatar/pose_calibration_flag',Int8,queue_size=5)
+    retargeting_sync_pub = rospy.Publisher('/tocabi/dg/upperbodymodecommand',Float32,queue_size=5)
+
     rospy.init_node('Emotion')
     prev_speaking_flag = -1
     prev_action = 1
@@ -45,9 +55,44 @@ def main(responses):
         if not result.alternatives:
             continue
         
-        transcript = result.alternatives[0].transcript 
+        transcript = result.alternatives[0].transcript.lower()
         
         if result.is_final:
+            
+            if "close" in transcript:
+                overlay_control_pub.publish("close")
+            if "open" in transcript:
+                overlay_control_pub.publish("open")
+            if "right" in transcript:
+                overlay_control_pub.publish("right")
+            if "left" in transcript:
+                overlay_control_pub.publish("left")
+            if "up" in transcript:
+                overlay_control_pub.publish("up")
+            if "down" in transcript:
+                overlay_control_pub.publish("down")
+            if "front" in transcript:
+                overlay_control_pub.publish("front")
+            if "back" in transcript:
+                overlay_control_pub.publish("back")
+            if "opacity" in transcript:
+                overlay_control_pub.publish(transcript)
+
+            if "1" in transcript:
+                pose_calibration_pub.publish(1)
+            elif "2" in transcript:
+                pose_calibration_pub.publish(2)
+            elif "3" in transcript:
+                pose_calibration_pub.publish(3)
+            elif "4" in transcript:
+                pose_calibration_pub.publish(4)
+            elif "5" in transcript:
+                pose_calibration_pub.publish(5)
+
+            if "stop" in transcript:
+                retargeting_sync_pub.publish(3)
+            
+
             IS_SPEAKING = False
             # TODO: Modulize Action Part  
             cur_action = D.decide(IS_SPEAKING, transcript)
