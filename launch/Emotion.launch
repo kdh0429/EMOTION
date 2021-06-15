@@ -1,0 +1,4 @@
+<launch>
+    <node name="Emotion_respwan" pkg="EMOTION" type="main.py" respawn="true" output="screen"/>
+    
+</launch>
