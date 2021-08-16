@@ -25,8 +25,8 @@ IS_SPEAKING = False
 def main(responses):
     pub = rospy.Publisher('tocabi/emotion', Int64, queue_size=10)
     overlay_control_pub = rospy.Publisher('overlay_command', String, queue_size=5)
-    pose_calibration_pub = rospy.Publisher('/tocabi/dg/avatar/pose_calibration_flag',Int8,queue_size=5)
-    retargeting_sync_pub = rospy.Publisher('/tocabi/dg/upperbodymodecommand',Float32,queue_size=5)
+    pose_calibration_pub = rospy.Publisher('/tocabi/avatar/pose_calibration_flag',Int8,queue_size=5)
+    retargeting_sync_pub = rospy.Publisher('/tocabi/avatar/upperbodymodecommand',Float32,queue_size=5)
 
     rospy.init_node('Emotion')
     prev_speaking_flag = -1
@@ -78,19 +78,21 @@ def main(responses):
             if "opacity" in transcript:
                 overlay_control_pub.publish(transcript)
 
-            if "1" in transcript:
+            if "1" in transcript: # Still pose
                 pose_calibration_pub.publish(1)
-            elif "2" in transcript:
+            elif "2" in transcript: # T pose
                 pose_calibration_pub.publish(2)
-            elif "3" in transcript:
+            elif "3" in transcript: # Forward pose
                 pose_calibration_pub.publish(3)
-            elif "4" in transcript:
+            elif "4" in transcript: # Reset
                 pose_calibration_pub.publish(4)
-            elif "5" in transcript:
+            elif "5" in transcript: # Load saved configuration
                 pose_calibration_pub.publish(5)
 
-            if "stop" in transcript:
+            if "turn off" in transcript:
                 retargeting_sync_pub.publish(3)
+            elif "turn on" in transcript:
+                retargeting_sync_pub.publish(5)
             
 
             IS_SPEAKING = False
