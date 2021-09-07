@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: UTF-8 -*-
 import rospy
 from std_msgs.msg import *
 
@@ -15,6 +16,8 @@ from google.cloud.speech import enums
 from google.cloud.speech import types
 import time
 import re
+
+import socket
 
 LANGUAGE = "en-US"
 RATE = 16000
@@ -33,6 +36,11 @@ def main(responses):
     prev_action = 1
     cur_action = 1
     D = Decision()
+
+    # Bind the socket to the port
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+    sock.connect(('localhost', 9008)) # 접속할 서버의 ip주소와 포트번호를 입력. 
+
     for response in responses:
         
         if not response.results:
@@ -50,7 +58,7 @@ def main(responses):
                 prev_action = cur_action
 
             prev_speaking_flag = cur_flag
-            pub.publish(cur_action)
+            pub.publish(cur_action)            
         
         if not result.alternatives:
             continue
@@ -106,6 +114,9 @@ def main(responses):
 
             prev_speaking_flag = -1
             pub.publish(cur_action)
+            sep = ' '
+            data = str(cur_action) + sep 
+            sock.send(data) # 내가 전송할 데이터를 보냄.
             # Exit recognition if any of the transcribed phrases could be one of ["exit", "quit"]
             if re.search(r"\b(exit|quit)\b", transcript, re.I):
                 print("Exiting..")

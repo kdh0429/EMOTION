@@ -15,28 +15,28 @@ class Decision:
 
     def load_keywods(self):
         basic_keywords_array = []
-        with open('C:/Users/Dyros/Desktop/avatar/src/EMOTION/keyword/basic_keywords.txt', 'r') as filehandle:
+        with open('C:/Users/Dyros/Desktop/avatar_ws/src/EMOTION/keyword/basic_keywords.txt', 'r') as filehandle:
             for line in filehandle:
                 currentPlace = line[:-1]
                 basic_keywords_array.append(currentPlace)
         self.basic_keywords = set(basic_keywords_array)
 
         grin_keywords_array = []
-        with open('C:/Users/Dyros/Desktop/avatar/src/EMOTION/keyword/grin_keywords.txt', 'r') as filehandle:
+        with open('C:/Users/Dyros/Desktop/avatar_ws/src/EMOTION/keyword/grin_keywords.txt', 'r') as filehandle:
             for line in filehandle:
                 currentPlace = line[:-1]
                 grin_keywords_array.append(currentPlace)
         self.grin_keywords = set(grin_keywords_array)
 
         wow_keywords_array = []
-        with open('C:/Users/Dyros/Desktop/avatar/src/EMOTION/keyword/wow_keywords.txt', 'r') as filehandle:
+        with open('C:/Users/Dyros/Desktop/avatar_ws/src/EMOTION/keyword/wow_keywords.txt', 'r') as filehandle:
             for line in filehandle:
                 currentPlace = line[:-1]
                 wow_keywords_array.append(currentPlace)
         self.wow_keywords = set(wow_keywords_array)
 
         negative_keywords_array = []
-        with open('C:/Users/Dyros/Desktop/avatar/src/EMOTION/keyword/negative_keywords.txt', 'r') as filehandle:
+        with open('C:/Users/Dyros/Desktop/avatar_ws/src/EMOTION/keyword/negative_keywords.txt', 'r') as filehandle:
             for line in filehandle:
                 currentPlace = line[:-1]
                 negative_keywords_array.append(currentPlace)
