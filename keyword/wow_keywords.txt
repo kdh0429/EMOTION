@@ -28,4 +28,6 @@ wahoo
 whee
 wow
 yahoo
+yea
+yeah
 yippee

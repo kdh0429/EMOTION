@@ -16,7 +16,8 @@ from google.cloud.speech import enums
 from google.cloud.speech import types
 import time
 import re
-
+import sys
+import os
 import socket
 
 LANGUAGE = "en-US"
@@ -25,7 +26,7 @@ CHUNK = int(RATE / 10)  # Unit: 100ms
 STREAMING_LIMIT = 240000  # 4 min.
 IS_SPEAKING = False
 
-def main(responses):
+def main(responses, sock):
     pub = rospy.Publisher('tocabi/emotion', Int64, queue_size=10)
     overlay_control_pub = rospy.Publisher('overlay_command', String, queue_size=5)
     pose_calibration_pub = rospy.Publisher('/tocabi/avatar/pose_calibration_flag',Int8,queue_size=5)
@@ -37,12 +38,7 @@ def main(responses):
     cur_action = 1
     D = Decision()
 
-    # Bind the socket to the port
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-    sock.connect(('localhost', 9008)) # 접속할 서버의 ip주소와 포트번호를 입력. 
-
     for response in responses:
-        
         if not response.results:
             continue
 
@@ -114,9 +110,11 @@ def main(responses):
 
             prev_speaking_flag = -1
             pub.publish(cur_action)
+            
             sep = ' '
             data = str(cur_action) + sep 
             sock.send(data) # 내가 전송할 데이터를 보냄.
+
             # Exit recognition if any of the transcribed phrases could be one of ["exit", "quit"]
             if re.search(r"\b(exit|quit)\b", transcript, re.I):
                 print("Exiting..")
@@ -139,6 +137,16 @@ if __name__ == "__main__":
         config=config, interim_results=True
     )
     
+    # TCP/IP for emotion display
+    # Bind the socket to the port
+    print("Init TCP/IP Connection")
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+    print("Waiting to Connect")
+    # sock.connect(('192.168.0.35', 9058)) # 접속할 서버의 ip주소와 포트번호를 입력.
+    sock.connect(('192.168.0.9', 8008)) # 접속할 서버의 ip주소와 포트번호를 입력. 
+    # sock.connect(('192.168.0.35', 9058)) # 접속할 서버의 ip주소와 포트번호를 입력. 
+    print("Connected to the Display Computer")
+
     # Streaming STT
     print("=================================")
     print("Configuration Set!")
@@ -151,5 +159,9 @@ if __name__ == "__main__":
         )
         print("=================================")
         print("Please speak anything to start...")
-        responses = client.streaming_recognize(streaming_config, requests)
-        main(responses)
+        while True:
+            try:
+                responses = client.streaming_recognize(streaming_config, requests)
+                main(responses, sock)
+            except Exception as exception:
+                print("Excption handle : Exceeded maximum allowed stream duration of 305 seconds")

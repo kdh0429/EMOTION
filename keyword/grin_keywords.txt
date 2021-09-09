@@ -6,12 +6,15 @@ delightful
 delighted
 enjoy
 enjoyed
+excited
 favorite
 fun
 funny
+glad
 good
 goodbye
 gorgeous
+grateful
 great
 grin
 ha
@@ -21,6 +24,7 @@ heart
 hehe
 hello
 hi
+hola
 hug
 joy
 joyful
@@ -36,6 +40,8 @@ pleasant
 pleasure
 proud
 smile
+success
+successful
 sunny
 special
 sparkling
