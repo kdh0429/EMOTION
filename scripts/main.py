@@ -142,9 +142,10 @@ if __name__ == "__main__":
     print("Init TCP/IP Connection")
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
     print("Waiting to Connect")
-    # sock.connect(('192.168.0.35', 9058)) # 접속할 서버의 ip주소와 포트번호를 입력.
-    sock.connect(('192.168.0.9', 8008)) # 접속할 서버의 ip주소와 포트번호를 입력. 
-    # sock.connect(('192.168.0.35', 9058)) # 접속할 서버의 ip주소와 포트번호를 입력. 
+    # 접속할 서버의 ip주소와 포트번호를 입력.
+    # sock.connect(('192.168.0.35', 9058)) 
+    # sock.connect(('192.168.0.9', 8008))
+    sock.connect(('192.168.0.35', 9058))
     print("Connected to the Display Computer")
 
     # Streaming STT
