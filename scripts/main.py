@@ -145,7 +145,7 @@ if __name__ == "__main__":
     # 접속할 서버의 ip주소와 포트번호를 입력.
     # sock.connect(('192.168.0.35', 9058)) 
     # sock.connect(('192.168.0.9', 8008))
-    sock.connect(('192.168.0.35', 9058))
+    sock.connect(('10.115.1.30', 9058))
     print("Connected to the Display Computer")
 
     # Streaming STT
